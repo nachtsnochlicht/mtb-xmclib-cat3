@@ -1353,7 +1353,7 @@ __STATIC_INLINE void XMC_USIC_CH_EnableFrameLengthControl(XMC_USIC_CH_t *const c
  */
 __STATIC_INLINE void XMC_USIC_CH_EnableWordLengthControl(XMC_USIC_CH_t *const channel)
 {
-  channel->TCSR = (uint32_t)(channel->TCSR & (~(USIC_CH_TCSR_WLEMD_Msk |
+  channel->TCSR = (uint32_t)(channel->TCSR & (~(USIC_CH_TCSR_FLEMD_Msk |
                              USIC_CH_TCSR_SELMD_Msk |
                              USIC_CH_TCSR_WAMD_Msk |
                              USIC_CH_TCSR_HPCMD_Msk))) |
