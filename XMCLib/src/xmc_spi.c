@@ -174,9 +174,7 @@ void XMC_SPI_CH_DisableSlaveSelect(XMC_USIC_CH_t *const channel)
 void XMC_SPI_CH_Transmit(XMC_USIC_CH_t *const channel, const uint16_t data, const XMC_SPI_CH_MODE_t mode)
 {
 
-  channel->CCR = (channel->CCR & (uint32_t)(~USIC_CH_CCR_HPCEN_Msk)) |
-                 (((uint32_t) mode << USIC_CH_CCR_HPCEN_Pos) & (uint32_t)USIC_CH_CCR_HPCEN_Msk);
-
+  XMC_SPI_CH_SetTransmitMode(channel, mode);
 
   /* Check FIFO size */
   if ((channel->TBCTR & USIC_CH_TBCTR_SIZE_Msk) == 0U)
@@ -192,6 +190,31 @@ void XMC_SPI_CH_Transmit(XMC_USIC_CH_t *const channel, const uint16_t data, cons
   else
   {
     channel->IN[mode] = data;
+  }
+}
+
+/**
+ * @author  Paul Förster | paul@nerds.cool
+ * @brief   SPI-Transmit Function compatible with different TCI Modes
+ *          TCI-Modes have to be set via USIC-API!
+*/
+void XMC_SPI_CH_Transmit_TCI(XMC_USIC_CH_t *const channel, const uint16_t data, const uint8_t tci){
+  XMC_ASSERT("Undefined TCI Value. Max 5bit!", !(tci & 0b11100000));
+
+  if ((channel->TBCTR & USIC_CH_TBCTR_SIZE_Msk) == 0U)
+  {
+    while (XMC_USIC_CH_GetTransmitBufferStatus(channel) == XMC_USIC_CH_TBUF_STATUS_BUSY)
+    {
+
+    }
+
+    XMC_SPI_CH_ClearStatusFlag(channel, (uint32_t)XMC_SPI_CH_STATUS_FLAG_TRANSMIT_BUFFER_INDICATION);
+
+    channel->TBUF[tci] = data;
+  }
+  else
+  {
+    channel->IN[tci] = data;
   }
 }
 

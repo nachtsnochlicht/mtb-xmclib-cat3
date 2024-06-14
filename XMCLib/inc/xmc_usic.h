@@ -1366,6 +1366,30 @@ __STATIC_INLINE void XMC_USIC_CH_EnableWordLengthControl(XMC_USIC_CH_t *const ch
  * @return None
  *
  * \par<b>Description</b><br>
+ * Enables automatic update of slace select. \n\n
+ * When the automatic update of slave select is enabled, slave select is configured based on the
+ * index of the TBUF[]/IN[] register array. When the data is written to TBUF[x], slave select is configured
+ * with the mask value of \a x at the last 5 bit positions. Same logic is applicable if data is written to
+ * IN[x] register.
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_USIC_CH_DisableFrameSlaveSelectUpdate(), XMC_USIC_CH_TXFIFO_PutDataSELMode() \n\n\n
+ */
+__STATIC_INLINE void XMC_USIC_CH_EnableSlaveSelectUpdate(XMC_USIC_CH_t *const channel)
+{
+  channel->TCSR = (uint32_t)(channel->TCSR & (~(USIC_CH_TCSR_WLEMD_Msk |
+                             USIC_CH_TCSR_FLEMD_Msk |
+                             USIC_CH_TCSR_WAMD_Msk |
+                             USIC_CH_TCSR_HPCMD_Msk))) |
+                  (uint32_t)USIC_CH_TCSR_SELMD_Msk;
+}
+
+/**
+ * @param  channel Pointer to USIC channel handler of type @ref XMC_USIC_CH_t \n
+ * 				   \b Range: @ref XMC_USIC0_CH0, @ref XMC_USIC0_CH1 to @ref XMC_USIC2_CH1 based on device support.
+ * @return None
+ *
+ * \par<b>Description</b><br>
  * Disables automatic update of frame length. \n\n
  * When automatic update of frame length is disabled, frame length has to configured explicitly.
  * Frame length remains fixed until it is changed again.
@@ -1395,6 +1419,25 @@ __STATIC_INLINE void XMC_USIC_CH_DisableWordLengthControl(XMC_USIC_CH_t *const c
 {
   channel->TCSR &= (uint32_t)~USIC_CH_TCSR_WLEMD_Msk;
 }
+
+/**
+ * @param  channel Pointer to USIC channel handler of type @ref XMC_USIC_CH_t \n
+ * 				   \b Range: @ref XMC_USIC0_CH0, @ref XMC_USIC0_CH1 to @ref XMC_USIC2_CH1 based on device support.
+ * @return None
+ * @author Paul Förster | paul@nerds.cool
+ *
+ * \par<b>Description</b><br>
+ * Disables automatic update of slave select. \n\n
+ * When automatic update of slave select is disabled, slave select has to configured explicitly.
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_USIC_CH_EnableFrameSlaveSelectUpdate() \n\n\n
+ */
+__STATIC_INLINE void XMC_USIC_CH_DisableSlaveSelectUpdate(XMC_USIC_CH_t *const channel)
+{
+  channel->TCSR &= (uint32_t)~USIC_CH_TCSR_SELMD_Msk;
+}
+
 
 /**
  * @param  channel Pointer to USIC channel handler of type @ref XMC_USIC_CH_t \n

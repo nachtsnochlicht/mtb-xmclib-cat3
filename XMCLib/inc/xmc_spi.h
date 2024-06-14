@@ -224,6 +224,8 @@ typedef enum XMC_SPI_CH_INPUT
 
 /**
  * Define SPI data transfer mode
+ * Refer to Reference Manual 17.2.5.3 -> Transmit Control Information -> Hardware Port Control
+ *    But what if we want to use other TCI modes? Hat mal wieder keiner dran gedacht...
  */
 typedef enum XMC_SPI_CH_MODE
 {
@@ -521,6 +523,28 @@ __STATIC_INLINE void XMC_SPI_CH_SetTransmitMode(XMC_USIC_CH_t *const channel, co
  * XMC_SPI_CH_Receive()
  */
 void XMC_SPI_CH_Transmit(XMC_USIC_CH_t *const channel, const uint16_t data, const XMC_SPI_CH_MODE_t mode);
+
+/**
+ * @param channel A constant pointer to XMC_USIC_CH_t, pointing to the USIC channel base address.
+ * @param data Data to be transmitted
+ * @param tci Transmit Control Information. Ensure to select proper TCI-Mode via XMC_USIC-API!
+ * 
+ * @return None
+ * 
+ * @author Paul Förster | paul@nerds.cool
+ * 
+ * \par<b>Description:</b><br>
+ * Puts the data into FIFO, if FIFO mode is enabled or else into standard buffer\n\n
+ * 
+ * 
+ * Warning: TCSR.HPCMD(Hardware Port control) will be enabled during the initialization using XMC_SPI_CH_Init() for all modes.
+ *          Ensure to select proper TCI-Mode via XMC_USIC-Api!
+ * 
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SPI_CH_Receive()
+
+*/
+void XMC_SPI_CH_Transmit_TCI(XMC_USIC_CH_t *const channel, const uint16_t data, const uint8_t tci);
 
 /**
  * @param channel A constant pointer to XMC_USIC_CH_t, pointing to the USIC channel base address.
